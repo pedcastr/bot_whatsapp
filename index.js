@@ -43,3 +43,5 @@ client.initialize();
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+module.exports = app;  // Para que Vercel possa detectar corretamente
