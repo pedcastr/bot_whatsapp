@@ -1,44 +1,16 @@
-const express = require('express');
+const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 
-const app = express();
-const port = 3000;
-
-const client = new Client({
-    authStrategy: new LocalAuth()
-});
-
-client.on('qr', qr => {
-    qrcode.generate(qr, { small: true });
-    console.log('QR code received, scan please!');
-});
+const client = new Client();
 
 client.on('ready', () => {
     console.log('Client is ready!');
 });
 
-client.on('auth_failure', message => {
-    console.error('Authentication failure:', message);
+client.on('qr', qr => {
+    qrcode.generate(qr, {small: true});
 });
-
-client.on('disconnected', (reason) => {
-    console.log('Client was logged out:', reason);
-});
-
-client.initialize().catch(err => {
-    console.error('Error initializing client:', err);
-});
-
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
-
-const users = {};
 
 client.on('message', msg => {
     const chatId = msg.from;
@@ -59,3 +31,5 @@ client.on('message', msg => {
 });
 
 module.exports = app;  // Para que Vercel possa detectar corretamente
+
+client.initialize();
